@@ -50,10 +50,11 @@ float mFloat = 0, bFloat = 0;
 
 // Drive commands
 
-float spdMax = 240;
+float spdMax = 254;
 
 // Initialize motor control
-MecanumPWM mecPWM(pwmFRpin, pwmFLpin, pwmRRpin, pwmRLpin, dirFRpin, dirFLpin, dirRRpin, dirRLpin, spdMax);
+MecanumPWM mecPWM(PwmFRpin, PwmFLpin, PwmRRpin, PwmRLpin, InaFRpin, InbFRpin, InaFLpin, InbFLpin, InaRRpin, InbRRpin,
+     InaRLpin, InbRLpin, spdMax);
 
 void setup() {
 
@@ -92,7 +93,7 @@ void loop() {
   //Serial.println(strafeVal);
 // calculate and apply pulse width to PWM outputs to motor controllers
   mecPWM.commandMotors(driveVal, turnVal, strafeVal);
-  mecPWM.debugMotorPrint();
+  //mecPWM.debugMotorPrint();
 }
 
 float convertRCtoFloat(unsigned long pulseWidth)

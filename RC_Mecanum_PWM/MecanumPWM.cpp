@@ -4,16 +4,21 @@
 
 //<<constructor>>
 //pass in the values for the PWM and direction pins to the pwm motor controllers
-MecanumPWM::MecanumPWM(int _pwmFR, int _pwmFL, int _pwmRR, int _pwmRL, int _dirFR, int _dirFL,
-	int _dirRR, int _dirRL, float _maxSpd)
+MecanumPWM::MecanumPWM(int _pwmFR, int _pwmFL, int _pwmRR, int _pwmRL, int _inaFRpin, int _inbFRpin, int _inaFLpin, int _inbFLpin, int _inaRRpin, int _inbRRpin,
+      int _inaRLpin, int _inbRLpin, float _maxSpd)
 {
 	pwmFR = _pwmFR; pwmFL = _pwmFL; pwmRR = _pwmRR; pwmRL = _pwmRL;
-	dirFR = _dirFR; dirFL = _dirFL; dirRR = _dirRR; dirRL = _dirRL;
-
+  inaFRpin = _inaFRpin; inbFRpin = _inbFRpin; inaFLpin = _inaFLpin; inbFLpin = _inbFLpin;
+  inaRRpin = _inaRRpin; inbRRpin = _inbRRpin; inaRLpin = _inaRLpin; inbRLpin = _inbRLpin;
 	maxSpd = _maxSpd;
 
-	pinMode(dirFR, OUTPUT); pinMode(dirFL, OUTPUT);
-	pinMode(dirRR, OUTPUT); pinMode(dirRL, OUTPUT);
+	pinMode(inaFRpin, OUTPUT); pinMode(inbFRpin, OUTPUT);
+  pinMode(inaFLpin, OUTPUT); pinMode(inbFLpin, OUTPUT);
+  pinMode(inaRRpin, OUTPUT); pinMode(inbRRpin, OUTPUT);
+  pinMode(inaRLpin, OUTPUT); pinMode(inbRLpin, OUTPUT);
+
+
+
 }
 
 //<<destructor>>
@@ -66,10 +71,10 @@ void MecanumPWM::debugMotorPrint()
 	Serial.print(motorFL.pulse); Serial.print(",");
 	Serial.print(motorRR.pulse); Serial.print(",");
 	Serial.print(motorRL.pulse); Serial.print("\t");
-       // Serial.print(dirFR); Serial.print(",");
-        //Serial.print(dirFL); Serial.print(",");
-        //Serial.print(dirRR); Serial.print(",");
-        //Serial.println(dirRL); 
+  Serial.print(motorFR.direction); Serial.print(",");
+  Serial.print(motorFL.direction); Serial.print(",");
+  Serial.print(motorRR.direction); Serial.print(",");
+  Serial.println(motorRL.direction); 
         
         Serial.print("\n");
 }
@@ -77,14 +82,14 @@ void MecanumPWM::debugMotorPrint()
 //-- private methods --//
 void MecanumPWM::setDirection() {
 	bool dir = LOW;
-	dir = motorFR.pulse > 0 ? HIGH : LOW; digitalWrite(dirFR, dir);
-        Serial.print(dir); Serial.print(",");
-	dir = motorFL.pulse > 0 ? LOW : HIGH; digitalWrite(dirFL, dir);
-        Serial.print(dir); Serial.print(",");
-	dir = motorRR.pulse > 0 ? HIGH : LOW; digitalWrite(dirRR, dir);
-        Serial.print(dir); Serial.print(",");
-	dir = motorRL.pulse > 0 ? LOW : HIGH; digitalWrite(dirRL, dir);
-        Serial.print(dir); Serial.print("\t"); Serial.print("\t");
+	motorFR.direction = motorFR.pulse > 0 ? HIGH : LOW; digitalWrite(inaFRpin, motorFR.direction); digitalWrite(inbFRpin, !motorFR.direction);
+        //Serial.print(dir); Serial.print(",");
+	motorFL.direction = motorFL.pulse > 0 ? LOW : HIGH; digitalWrite(inaFLpin, motorFL.direction); digitalWrite(inbFLpin, !motorFL.direction);
+        //Serial.print(dir); Serial.print(",");
+	motorRR.direction = motorRR.pulse > 0 ? HIGH : LOW; digitalWrite(inaRRpin, motorRR.direction); digitalWrite(inbRRpin, !motorRR.direction);
+        //Serial.print(dir); Serial.print(",");
+	motorRL.direction = motorRL.pulse > 0 ? LOW : HIGH; digitalWrite(inaRLpin, motorRL.direction); digitalWrite(inbRLpin, !motorRL.direction);
+        //Serial.print(dir); Serial.print("\t"); Serial.print("\t");
 
 	motorFR.pulse = getAbsolute(motorFR.pulse);
 	motorFL.pulse = getAbsolute(motorFL.pulse);
